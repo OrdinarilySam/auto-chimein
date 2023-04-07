@@ -1,0 +1,34 @@
+{
+
+  "manifest_version": 2,
+  "name": "Auto ChimeIn",
+  "version": "2.0",
+
+  "description": "Automatically answers chimein questions",
+
+  "permissions": [
+    "*://chimein2.cla.umn.edu/*", 
+    "*://discord.com/api/webhooks/*"
+  ],
+
+  "icons": {
+    "48": "icons/logo48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://chimein2.cla.umn.edu/chimeParticipant/*"],
+      "css": ["content.css"],
+      "js": ["content.js"]
+    }
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "autochimein@dadahasa.com",
+      "strict_min_version": "100.0"
+    }
+  }
+
+
+}

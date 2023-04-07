@@ -11,7 +11,7 @@
     7px 7px 20px 0px rgba(0,0,0,.1),
     4px 4px 5px 0px rgba(0,0,0,.1);
   transition: all 100ms ease-in-out;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   margin: 10px;

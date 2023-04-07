@@ -24,7 +24,7 @@ injectionString = `
           answerData.push(index)
         }
       })
-      params.content = \`Chime in opened, correct answers: \${answerText.join(", ")}. @everyone\`
+      params.content = \`Chime in opened, correct answers: \${answerText.join(", ")}. Attempting to answer...\`
       setTimeout(() => {
         const elements = document.querySelectorAll("article.participant-prompt")
         elements.forEach((element, index) => {

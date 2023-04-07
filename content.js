@@ -22,24 +22,22 @@ function handleMessage(msg) {
     const data = JSON.parse(msg.data.substring(2))[2];
     const answerData = [];
     const answerText = [];
-    const questionText = data["session"]["question"]["text"];
+    const questionText = data["session"]["question"]["text"].slice(3, -4);
 
     // checks each of the responses for the correct answers
     data["session"]["question"]["question_info"]["question_responses"].forEach(
       (question, index) => {
         if (question["correct"]) {
           // the index is set to answerdata and a string containing the correct answers to answertext
-          answerText.push(
-            question["text"].substring(3, question["text"].length - 4)
-          );
+          answerText.push(question["text"].slice(3, -4));
           answerData.push(index);
         }
       }
     );
     // changes the webhook message to contain the correct answer and notify of opening
-    params.content = `ChimeIn opened, correct answers: ${answerText.join(
+    params.content = `ChimeIn opened, correct answers: **${answerText.join(
       ", "
-    )}. Attempting to answer...`;
+    )}**.\n*Attempting to answer...*`;
 
     setTimeout(() => {
       // waits a few seconds before attempting to select the correct elements
@@ -47,20 +45,19 @@ function handleMessage(msg) {
       const elements = document.querySelectorAll("article.participant-prompt");
       elements.forEach((element) => {
         if (
-          (element.childNodes[0].childNodes[1].childNodes[0].childNodes[0].innerHTML =
-            questionText)
+          element.childNodes[0].childNodes[1].childNodes[0].childNodes[0]
+            .innerHTML === questionText
         ) {
           const options =
             element.childNodes[1].childNodes[0].childNodes[0].children;
           options[answerData[0]].childNodes[0].click();
+          // creates a new webhook request to share that the answer was selected
+          const request = new XMLHttpRequest();
+          request.open("POST", discordWebhookUrl);
+          request.setRequestHeader("Content-type", "application/json");
+          request.send(JSON.stringify({ content: "Correct answer selected!" }));
         }
       });
-
-      // creates a new webhook request to share that the answer was selected
-      const request = new XMLHttpRequest();
-      request.open("POST", discordWebhookUrl);
-      request.setRequestHeader("Content-type", "application/json");
-      request.send(JSON.stringify({ content: "Correct answer selected!" }));
     }, 5000);
   } else {
     params.content = "ChimeIn session ended.";

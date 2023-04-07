@@ -12,11 +12,17 @@ let injectionString = `
   const discordWebhookUrl = "<PLACEHOLDER DISCORD WEBHOOK URL PLACEHOLDER>"
 `;
 
+function sendWebhook(msg) {
+  const request = new XMLHttpRequest();
+  request.open("POST", discordWebhookUrl);
+  request.setRequestHeader("Content-type", "application/json");
+  request.send(JSON.stringify({ content: msg }));
+}
+
 function handleMessage(msg) {
   // handles a new message from the websocket
   // guard clause to check that the scanner is enabled and the message has data
   if (!(isRunning && msg.data.includes("Session"))) return;
-  const params = { content: "Placeholder content" };
 
   if (msg.data.includes("StartSession")) {
     const data = JSON.parse(msg.data.substring(2))[2];
@@ -34,10 +40,12 @@ function handleMessage(msg) {
         }
       }
     );
-    // changes the webhook message to contain the correct answer and notify of opening
-    params.content = `ChimeIn opened, correct answers: **${answerText.join(
-      ", "
-    )}**.\n*Attempting to answer...*`;
+    // sends a webhook saying the chime in has opened
+    sendWebhook(
+      `ChimeIn opened, correct answers: **${answerText.join(
+        ", "
+      )}**.\n*Attempting to answer...*`
+    );
 
     setTimeout(() => {
       // waits a few seconds before attempting to select the correct elements
@@ -52,22 +60,13 @@ function handleMessage(msg) {
             element.childNodes[1].childNodes[0].childNodes[0].children;
           options[answerData[0]].childNodes[0].click();
           // creates a new webhook request to share that the answer was selected
-          const request = new XMLHttpRequest();
-          request.open("POST", discordWebhookUrl);
-          request.setRequestHeader("Content-type", "application/json");
-          request.send(JSON.stringify({ content: "Correct answer selected!" }));
+          sendWebhook(`Option "**${answerText[0]}**" selected!`);
         }
       });
     }, 5000);
   } else {
-    params.content = "ChimeIn session ended.";
+    sendWebhook("ChimeIn session ended.");
   }
-
-  // creates a request either sharing the session opened or closing
-  const request = new XMLHttpRequest();
-  request.open("POST", discordWebhookUrl);
-  request.setRequestHeader("Content-type", "application/json");
-  request.send(JSON.stringify(params));
 }
 
 function socketSniffer() {
@@ -83,7 +82,7 @@ function socketSniffer() {
 }
 
 // appends the functions then the toggle and a call to the socketsniffer function
-injectionString += `\n${handleMessage.toString()}\n${socketSniffer.toString()}\n`;
+injectionString += `${sendWebhook.toString()}\n${handleMessage.toString()}\n${socketSniffer.toString()}\n`;
 injectionString += `
   toggleButton.addEventListener("click", ()=> {
     if(isRunning){

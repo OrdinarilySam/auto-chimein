@@ -4,6 +4,16 @@
   "name": "Auto ChimeIn",
   "version": "1.4",
 
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "16": "icons/autoChimeIn16.png",
+      "32": "icons/autoChimeIn32.png"
+    },
+    "default_title": "Auto ChimeIn",
+    "default_popup": "popup.html"
+  },
+
   "description": "Automatically answers chimein questions",
 
   "permissions": [

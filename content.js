@@ -11,7 +11,7 @@ let injectionString = `
   let isRunning = false; 
   let sendPings = false;
   const toggleButton = document.getElementById("toggleBtn");
-  const discordWebhookUrl = ""
+  let discordWebhookUrl = ""
 `;
 
 function sendWebhook(msg) {

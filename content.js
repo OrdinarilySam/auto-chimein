@@ -6,17 +6,21 @@ toggleButton.id = "toggleBtn";
 
 document.body.appendChild(toggleButton);
 
+
 let injectionString = `
   let isRunning = false; 
+  let sendPings = false;
   const toggleButton = document.getElementById("toggleBtn");
-  const discordWebhookUrl = "<PLACEHOLDER DISCORD WEBHOOK URL PLACEHOLDER>"
+  const discordWebhookUrl = ""
 `;
 
 function sendWebhook(msg) {
-  const request = new XMLHttpRequest();
-  request.open("POST", discordWebhookUrl);
-  request.setRequestHeader("Content-type", "application/json");
-  request.send(JSON.stringify({ content: msg }));
+  if(sendPings && discordWebhookUrl){
+    const request = new XMLHttpRequest();
+    request.open("POST", discordWebhookUrl);
+    request.setRequestHeader("Content-type", "application/json");
+    request.send(JSON.stringify({ content: msg }));
+  }
 }
 
 function handleMessage(msg) {

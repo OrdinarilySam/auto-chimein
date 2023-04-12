@@ -6,10 +6,14 @@
 <body>
   <div class="root">
     <h3>Auto ChimeIn Settings</h3>
-    <p>Status: <span>No Webhook URL</span></p>
-    <input type="text" name="" id="webhookUrlInp" placeholder="Webhook URL">
-    <label for="discordPings">Discord Pings</label>
-    <input type="checkbox" name="discordPings" id="discordPingsChk" checked>
+    <p>Status: <span id="urlStatus">No Webhook URL</span></p>
+    <form id="optionsForm">
+      <label for="webhookUrl">Webhook URL</label>
+      <input type="text" name="webhookUrl" id="webhookUrlInp" placeholder="Webhook URL">
+      <button type="submit">Submit</button>
+      <label for="discordPings">Discord Pings</label>
+      <input type="checkbox" name="discordPings" id="discordPingsChk" checked>
+    </form>
   </div>
   <script src="popup.js"></script>
 </body>

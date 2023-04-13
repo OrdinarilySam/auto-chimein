@@ -2,7 +2,18 @@
 
   "manifest_version": 2,
   "name": "Auto ChimeIn",
-  "version": "1.4",
+  "version": "2.0",
+
+  "page_action": {
+    "browser_style": false,
+    "show_matches": ["*://chimein2.cla.umn.edu/chimeParticipant/*"],
+    "default_icon": {
+      "16": "icons/autoChimeIn16.png",
+      "32": "icons/autoChimeIn32.png"
+    },
+    "default_title": "Auto ChimeIn",
+    "default_popup": "popup/popup.html"
+  },
 
   "description": "Automatically answers chimein questions",
 
@@ -18,10 +29,14 @@
   "content_scripts": [
     {
       "matches": ["*://chimein2.cla.umn.edu/chimeParticipant/*"],
-      "css": ["content.css"],
-      "js": ["content.js"]
+      "css": ["content/content.css"],
+      "js": ["content/content.js"]
     }
   ],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
 
   "browser_specific_settings": {
     "gecko": {

@@ -8,22 +8,59 @@ document.body.appendChild(toggleButton);
 
 let injectionString = `
   let isRunning = false; 
+  let sendPings = false;
   const toggleButton = document.getElementById("toggleBtn");
-  const discordWebhookUrl = "<PLACEHOLDER DISCORD WEBHOOK URL PLACEHOLDER>"
-`;
+  let discordWebhookUrl = ""
+  `;
 
-function sendWebhook(msg) {
-  const request = new XMLHttpRequest();
-  request.open("POST", discordWebhookUrl);
-  request.setRequestHeader("Content-type", "application/json");
-  request.send(JSON.stringify({ content: msg }));
+// listens for messages from the injection script to receive data, then requests
+// that data from the background script and sends the response back to the injection
+window.addEventListener("message", async (event) => {
+  if (event.data.type === "requestData") {
+    const responseData = await browser.runtime.sendMessage({
+      type: "requestData",
+    });
+    window.postMessage(
+      { type: "dataReceived", data: responseData.data },
+      event.origin
+    );
+  }
+});
+
+// returns a promise to allow for asynchronous execution to ensure the data is received
+// creates an event listener to handle the message then deletes it to prevent duplicates
+// promise waits for data from content (not injected) to come back
+async function requestData() {
+  return new Promise((resolve, reject) => {
+    function handleMessage(msg) {
+      if (msg.data.type === "dataReceived") {
+        sendPings = msg.data.data.pings;
+        discordWebhookUrl = msg.data.data.url;
+        resolve(msg.data.data);
+        window.removeEventListener("message", handleMessage);
+      }
+    }
+    window.addEventListener("message", handleMessage);
+    window.postMessage({ type: "requestData" }, "*");
+  });
+}
+
+// sends a webhook request to the discord if there is a webhook url saved
+// and sendpings is enabled
+async function sendWebhook(msg) {
+  await requestData();
+  if (sendPings && discordWebhookUrl) {
+    const request = new XMLHttpRequest();
+    request.open("POST", discordWebhookUrl);
+    request.setRequestHeader("Content-type", "application/json");
+    request.send(JSON.stringify({ content: msg }));
+  }
 }
 
 function handleMessage(msg) {
   // handles a new message from the websocket
   // guard clause to check that the scanner is enabled and the message has data
   if (!(isRunning && msg.data.includes("Session"))) return;
-
   if (msg.data.includes("StartSession")) {
     const data = JSON.parse(msg.data.substring(2))[2];
     const answerData = [];
@@ -82,7 +119,11 @@ function socketSniffer() {
 }
 
 // appends the functions then the toggle and a call to the socketsniffer function
-injectionString += `${sendWebhook.toString()}\n${handleMessage.toString()}\n${socketSniffer.toString()}\n`;
+injectionString += `
+  \n${sendWebhook.toString()}
+  \n${handleMessage.toString()}
+  \n${socketSniffer.toString()}
+  \n${requestData.toString()}\n`;
 injectionString += `
   toggleButton.addEventListener("click", ()=> {
     if(isRunning){

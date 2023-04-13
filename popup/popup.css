@@ -1,0 +1,30 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+span {
+  font-weight: bold;
+}
+
+form {
+  display: grid;
+  row-gap: 1em;
+}
+
+input[type=text] {
+  grid-column: 1 / 3;
+  
+}
+
+button {
+  grid-column: 4;
+}
+
+label {
+  grid-column: 1 / 4;
+}
+
+input[type=checkbox] {
+  grid-column: 1 / 4;
+}

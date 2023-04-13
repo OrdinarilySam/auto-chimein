@@ -12,7 +12,7 @@
       "32": "icons/autoChimeIn32.png"
     },
     "default_title": "Auto ChimeIn",
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
 
   "description": "Automatically answers chimein questions",
@@ -29,8 +29,8 @@
   "content_scripts": [
     {
       "matches": ["*://chimein2.cla.umn.edu/chimeParticipant/*"],
-      "css": ["content.css"],
-      "js": ["content.js"]
+      "css": ["content/content.css"],
+      "js": ["content/content.js"]
     }
   ],
 

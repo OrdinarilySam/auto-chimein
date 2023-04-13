@@ -4,8 +4,9 @@
   "name": "Auto ChimeIn",
   "version": "1.4",
 
-  "browser_action": {
-    "browser_style": true,
+  "page_action": {
+    "browser_style": false,
+    "show_matches": ["*://chimein2.cla.umn.edu/chimeParticipant/*"],
     "default_icon": {
       "16": "icons/autoChimeIn16.png",
       "32": "icons/autoChimeIn32.png"
@@ -32,6 +33,10 @@
       "js": ["content.js"]
     }
   ],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
 
   "browser_specific_settings": {
     "gecko": {

@@ -2,6 +2,7 @@ const discordPingsChk = document.getElementById("discordPingsChk");
 const webhookUrlInp = document.getElementById("webhookUrlInp");
 const optionsForm = document.getElementById("optionsForm");
 const urlStatus = document.getElementById("urlStatus");
+const pingsStatus = document.getElementById("pingsStatus")
 
 const regex = /https:\/\/discord\.com\/api\/webhooks\/\d+\/[\w-]+/;
 
@@ -15,8 +16,10 @@ if (localStorage.getItem("autoChimeValues")) {
   }
   if (values.pings) {
     discordPingsChk.checked = true;
+    pingsStatus.textContent = "On"
   } else {
     discordPingsChk.checked = false;
+    pingsStatus.textContent = "Off"
   }
 }
 
@@ -27,8 +30,10 @@ function updateLocalStorage() {
 discordPingsChk.addEventListener("change", (event) => {
   if (event.target.checked) {
     values.pings = true;
+    pingsStatus.textContent = "On"
   } else {
     values.pings = false;
+    pingsStatus.textContent = "Off"
   }
   updateLocalStorage();
 });
